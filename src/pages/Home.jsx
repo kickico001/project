@@ -4,6 +4,7 @@ import img2 from "../assets/Binance.png";
 import img3 from "../assets/fluidtoken.png";
 import img4 from "../assets/neufund.png";
 import img5 from "../assets/sund.png";
+import Footer from "../component/Footer";
 
 const Home = () => {
   function showAlert() {
@@ -59,9 +60,7 @@ const Home = () => {
         className=" lg:px-10 px-4 pt-12 md:pt-24 pb-10   lg:h-screen "
       >
         <div className="flex flex-col items-center space-y-2">
-          <h2 className=" text-lg md:text-[2rem] font-bold">
-            Why CardaFlux{" "}
-          </h2>
+          <h2 className=" text-lg md:text-[2rem] font-bold">Why CardaFlux </h2>
           <div className="w-[24%] border-b-4 border-b-orange-500 " />
         </div>{" "}
         <div className="justify-between flex flex-col items-center gap-y-10 lg:flex-row mt-6">
@@ -74,8 +73,8 @@ const Home = () => {
           </div>{" "}
           <div className="space-y-8 flex flex-col items-center lg:items-start ">
             <p className="text-xl md:text-2xl max-w-xl  font-semibold ">
-              CardaFlux is developed by the best of talents in the industry
-              for every of your needs towards making cardaFlux adoption easier and
+              CardaFlux is developed by the best of talents in the industry for
+              every of your needs towards making cardaFlux adoption easier and
               inclusive.
             </p>{" "}
             <div className="border-b border-b-gray-50/50 w-full"></div>
@@ -94,7 +93,7 @@ const Home = () => {
               </li>
               <li className="flex items-center">
                 <span className="bg-purple-500 w-3 h-3 mr-2 rounded-full"></span>
-                4.6 Rating on TrustPilot based on 521 Reviewsd
+                4.6 Rating on TrustPilot based on 521 Reviews
               </li>
             </ul>
             <p className="max-w-xl">
@@ -109,19 +108,9 @@ const Home = () => {
               ,
               <Link to="/" className="border-b border-b-orange-500">
                 {" "}
-                CLAIM{" "}
+                CLAIM and MInt NFTS{" "}
               </Link>
-              ,{" "}
-              <Link to="/" className="border-b border-b-orange-500">
-                {" "}
-                MInt NFTS
-              </Link>
-              ,
-              <Link to="/" className="border-b border-b-orange-500">
-                {" "}
-                TRACK ADA REWARDS
-              </Link>{" "}
-              and SUPPORT your favorite pools.
+              , and SUPPORT your favorite pools.
             </p>{" "}
           </div>
         </div>
@@ -197,6 +186,9 @@ const Home = () => {
           </form>
         </div>
       </section>
+
+      {/* fooyer */}
+      <Footer />
     </main>
   );
 };
