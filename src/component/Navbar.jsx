@@ -1,6 +1,11 @@
 import { Link } from "react-router-dom";
-
+import { WALLETCONTEXT } from '../context/walletContext';
 const Navbar = () => {
+  const { initWallet, account, DisconnectWallet } = WALLETCONTEXT();
+  const connectToWallet = async (e) => {
+    e.preventDefault();
+    initWallet();
+  }
   return (
     <div className="container mx-auto p-4 flex justify-center items-center">
       <div className="p-3 bg-[#030015] rounded-xl w-full">
@@ -21,6 +26,14 @@ const Navbar = () => {
             >
               Stake Here!
             </Link>
+            {
+              !account ? <a href="#" onClick={(e) => connectToWallet(e)}>
+                Connect
+              </a> : <a href="#" onClick={(e) => DisconnectWallet()}>
+                Disconnect
+              </a>
+            }
+
           </div>
         </div>
       </div>

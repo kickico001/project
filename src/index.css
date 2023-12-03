@@ -33,3 +33,16 @@ input:focus-within ~ label {
     transform: translateY(-10px);
   }
 }
+
+.pools{
+  max-height: 200px;
+  background-color: white;
+  overflow-y: scroll;
+}
+.poolname{
+  border-bottom: 1px solid #dedede;
+  cursor: pointer;
+}
+.poolname:hover{
+background-color: rgba(0, 0, 0, 0.1);
+}

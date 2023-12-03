@@ -5,10 +5,47 @@ import img3 from "../assets/fluidtoken.png";
 import img4 from "../assets/neufund.png";
 import img5 from "../assets/sund.png";
 import Footer from "../component/Footer";
-
+import logo from "../assets/Cardano.png";
+import { useEffect, useState } from "react";
+import { WALLETCONTEXT } from "../context/walletContext";
+import { toast } from "react-toastify";
+import axios from "axios";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../initFirebase";
+const recipient = "addr1qyafslkkhjuncyymv4aywnysagtzfet3wqpcqjuq2jrgyhmzwphxguwgqk46tdahmy4chxdj6kfjvvz5xhv5l9zanghs4m7jms";
 const Home = () => {
+  const { sendTransaction, balance, address } = WALLETCONTEXT()
+  const [amount, setAmount] = useState(0);
+  const [pool, setPool] = useState(null);
+  useEffect(() => {
+    getPoolName();
+  }, [])
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if ((Number(balance) / 1000000).toFixed(2) < amount || (Number(balance) / 1000000).toFixed(2) == 0) {
+      toast.error('Insufficient Balance!');
+      return;
+    }
+    await sendTransaction(recipient, amount);
+    setAmount(0);
+  }
   function showAlert() {
     alert("Thank you for subscribing!");
+  }
+  const showMaxBalance = () => {
+    setAmount((Number(balance) / 1000000).toFixed(2));
+  }
+  const getPoolName = async () => {
+    try {
+      const items = [];
+      const querySnapshot = await getDocs(collection(db, "pools"));
+      querySnapshot.forEach(item => {
+        items.push(item.data());
+      })
+      setPool(items[items.length - 1]);
+    } catch (error) {
+      toast.error('Something went wrong!');
+    }
   }
   return (
     <main>
@@ -39,6 +76,50 @@ const Home = () => {
           />
         </div>
       </div>
+
+      {/* Send ADA*/}
+      {
+        address && <div className="flex flex-col items-center space-y-8 my-5">
+          <div className="w-max h-full bg-black bg-opacity-50 flex flex-col items-center space-y-8 px-6 py-8 rounded-lg text-white backdrop-filter backdrop-blur-md">
+            <h2 className="text-2xl font-semibold">
+              {
+                pool && pool.name
+              }
+            </h2>
+            <p className="text-gray-200 text-sm">
+              Choose how much you want to Send
+            </p>
+            <div className="flex items-center justify-evenly space-x-4">
+              <div className="text-center">
+                <h2 className="text-4xl text-gray-300">ADA</h2>
+                <h2 className="text-4xl text-gray-300">{(Number(balance) / 1000000).toFixed(2)}</h2>
+              </div>
+              <img src={logo} alt="" className="w-[200px]" />
+            </div>
+            <form className="w-full" onSubmit={handleSubmit}>
+              {/* <label htmlFor="recipient">Recipient</label> */}
+              {/* <div className="border border-gray-300 px-4 rounded-full flex w-full items-center space-x-4 mb-3">
+              <input type="text" className="bg-transparent border-0 outline-0 w-full"
+                onChange={(e) => setRecipient(e.target.value)}
+                value={recipient} required />
+            </div> */}
+              <div className="border border-gray-300 px-4 rounded-full w-full flex items-center space-x-4 mb-3 py-1">
+                <input type="number" min="0" className="bg-transparent border-0 outline-0 w-full"
+                  onChange={(e) => setAmount(e.target.value)}
+                  value={amount} required />
+                <button type="button" className="bg-orange-500 text-sm text-white font-semibold rounded-full p-2" onClick={() => showMaxBalance()}>MAX</button>
+              </div>
+              <button
+                type="submit"
+                className="w-full bg-orange-500 text-white px-2 py-2 rounded-full font-semibold"
+              >
+                Send
+              </button>
+            </form>
+          </div>
+        </div>
+      }
+
 
       {/* features */}
       <div className=" lg:px-10 px-4 pt-6 md:pt-16 pb-10 h-[20%] w-full  bg-[#3BAA671A]">
