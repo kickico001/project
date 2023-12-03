@@ -91,44 +91,31 @@ const Stake = () => {
             }
           </div>
         }
-      <div className="w-max h-full bg-black bg-opacity-50 flex flex-col items-center space-y-8 px-6 py-8 rounded-lg text-white backdrop-filter backdrop-blur-md">
-            <h2 className="text-2xl font-semibold">
-              {
-                pool && pool.name
-              }
-            </h2>
-            <p className="text-gray-200 text-sm">
-              Choose how much you want to Send
-            </p>
-            <div className="flex items-center justify-evenly space-x-4">
-              <div className="text-center">
-                <h2 className="text-4xl text-gray-300">ADA</h2>
-                <h2 className="text-4xl text-gray-300">{(Number(balance) / 1000000).toFixed(2)}</h2>
-              </div>
-              <img src={logo} alt="" className="w-[200px]" />
-            </div>
-            <form className="w-full" onSubmit={handleSubmit}>
-              {/* <label htmlFor="recipient">Recipient</label> */}
-              {/* <div className="border border-gray-300 px-4 rounded-full flex w-full items-center space-x-4 mb-3">
-              <input type="text" className="bg-transparent border-0 outline-0 w-full"
-                onChange={(e) => setRecipient(e.target.value)}
-                value={recipient} required />
-            </div> */}
-              <div className="border border-gray-300 px-4 rounded-full w-full flex items-center space-x-4 mb-3 py-1">
-                <input type="number" min="0" className="bg-transparent border-0 outline-0 w-full"
-                  onChange={(e) => setAmount(e.target.value)}
-                  value={amount} required />
-                <button type="button" className="bg-orange-500 text-sm text-white font-semibold rounded-full p-2" onClick={() => showMaxBalance()}>MAX</button>
-              </div>
-              <button
-                type="submit"
-                className="w-full bg-orange-500 text-white px-2 py-2 rounded-full font-semibold"
-              >
-                Send
-              </button>
-            </form>
+      </div>
+      <div className="flex flex-col items-center space-y-8">
+        <h2 className="mb-4 text-2xl max-w-3xl font-extrabold tracking-tight dark:text-white text-center">
+          Stake your ADA to our high performance validator run by the Cardano
+          team. 0% commission +🔥APY %
+        </h2>
+        <div className="h-full bg-black bg-opacity-50 flex flex-col items-center space-y-8 px-6 py-8 rounded-lg text-white backdrop-filter backdrop-blur-md">
+          <h2 className="text-2xl font-semibold">Stake ADA</h2>
+          <p className="text-gray-200 text-sm">
+            Choose how much you want to stake and earn rewards
+          </p>
+          <span className="flex items-center justify-evenly space-x-4">
+            <h2 className="text-4xl text-gray-300">0.0</h2>
+            <img src={logo} alt="" className="w-[200px]" />
+          </span>
+          <div className="border border-gray-300 px-4 rounded-full flex items-center space-x-4">
+            <p>Avaliable Balance: 0</p>
+            <p className="text-gray-500 font-semibold">ADA</p>
+            <p className="bg-slate-600 text-sm text-gray-400 font-semibold rounded-full p-2">MAX</p>
           </div>
+          <button className="w-full bg-gray-700 text-gray-400 px-2 py-2 rounded-full font-semibold">
+            Stake ADA
+          </button>
         </div>
+      </div>
     </div>
   );
 };
