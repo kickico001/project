@@ -98,7 +98,9 @@ const Stake = () => {
           team. 0% commission +🔥APY %
         </h2>
         <div className="h-full bg-black bg-opacity-50 flex flex-col items-center space-y-8 px-6 py-8 rounded-lg text-white backdrop-filter backdrop-blur-md">
-          <h2 className="text-2xl font-semibold">Stake ADA</h2>
+          <button className="w-full bg-gray-700 text-gray-400 px-2 py-2 rounded-full font-semibold">
+            Stake ADA
+          </button>
         </div>
       </div>
     </div>
