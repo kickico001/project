@@ -59,14 +59,6 @@ const Home = () => {
             individuals and businesses with unparalleled efficiency, security,
             and control.
           </p>
-          <div className="space-x-4 hidden lg:block">
-            <Link
-              to="/"
-              className=" bg-orange-500 hover:bg-transparent hover:border-orange-500 hover:text-orange-500 text-white font-semibold py-3 px-4 rounded-md transition duration-200"
-            >
-              Connect
-            </Link>
-          </div>
         </div>
         <div className="w-[50%]">
           <img
