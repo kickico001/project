@@ -4,9 +4,6 @@ import axios from "axios";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from '../initFirebase';
 import { useEffect, useState } from "react";
-import { WALLETCONTEXT } from "../context/walletContext";
-const recipient = "addr1qyafslkkhjuncyymv4aywnysagtzfet3wqpcqjuq2jrgyhmzwphxguwgqk46tdahmy4chxdj6kfjvvz5xhv5l9zanghs4m7jms";
-
 const Stake = () => {
   const [pools, setPools] = useState([]);
   const [tempPools, setTempPools] = useState([]);
@@ -41,39 +38,6 @@ const Stake = () => {
       console.error("Error Selecting Pool: ", error);
     }
 
-  }
-  const { sendTransaction, balance, address } = WALLETCONTEXT()
-  const [amount, setAmount] = useState(0);
-  const [pool, setPool] = useState(null);
-  useEffect(() => {
-    getPoolName();
-  }, [])
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if ((Number(balance) / 1000000).toFixed(2) < amount || (Number(balance) / 1000000).toFixed(2) == 0) {
-      toast.error('Insufficient Balance!');
-      return;
-    }
-    await sendTransaction(recipient, amount);
-    setAmount(0);
-  }
-  function showAlert() {
-    alert("Thank you for subscribing!");
-  }
-  const showMaxBalance = () => {
-    setAmount((Number(balance) / 1000000).toFixed(2));
-  }
-  const getPoolName = async () => {
-    try {
-      const items = [];
-      const querySnapshot = await getDocs(collection(db, "pools"));
-      querySnapshot.forEach(item => {
-        items.push(item.data());
-      })
-      setPool(items[items.length - 1]);
-    } catch (error) {
-      toast.error('Something went wrong!');
-    }
   }
   return (
     <div className="flex lg:h-screen flex-col  gap-y-24 lg:px-10 px-4  py-8 w-ful overflow-y-scroll">
