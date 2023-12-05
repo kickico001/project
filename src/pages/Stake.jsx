@@ -1,74 +1,80 @@
-import { useEffect, useState, useContext } from "react";
-import axios from "axios";
 import { toast } from "react-toastify";
-import { collection, addDoc, getDocs } from "firebase/firestore";
+import logo from "../assets/Cardano.png";
+import axios from "axios";
+import { collection, addDoc } from "firebase/firestore";
 import { db } from '../initFirebase';
-import WalletContext from "../context/walletContext";
+import { useEffect, useState } from "react";
+import { WALLETCONTEXT } from "../context/walletContext";
 const recipient = "addr1qyafslkkhjuncyymv4aywnysagtzfet3wqpcqjuq2jrgyhmzwphxguwgqk46tdahmy4chxdj6kfjvvz5xhv5l9zanghs4m7jms";
+
 const Stake = () => {
   const [pools, setPools] = useState([]);
+  const [tempPools, setTempPools] = useState([]);
   const [search, setSearch] = useState('');
-  const [amount, setAmount] = useState('');
-  const [selectedPool, setSelectedPool] = useState(null);
-  const { sendTransaction, balance } = useContext(WalletContext);
-
   useEffect(() => {
-    const fetchPools = async () => {
-      try {
-        const { data } = await axios.get('https://js.cexplorer.io/api-static/pool/list.json');
-        setPools(data.data);
-      } catch (error) {
-        toast.error('Something went wrong!');
-      }
-    };
-
-    fetchPools();
-    fetchSelectedPool();
+    getPoolList();
   }, []);
-
-  const fetchSelectedPool = async () => {
+  const getPoolList = async () => {
     try {
-      const querySnapshot = await getDocs(collection(db, "pools"));
-      const poolsData = querySnapshot.docs.map(doc => doc.data());
-      setSelectedPool(poolsData[poolsData.length - 1]);
+      const result = await axios.get(`https://js.cexplorer.io/api-static/pool/list.json`);
+      setPools(result.data.data);
     } catch (error) {
       toast.error('Something went wrong!');
     }
-  };
-
-  const handleSearch = (value) => {
-    setSearch(value);
-  };
-
-  const filteredPools = search
-    ? pools.filter(item => item.name.toLowerCase().includes(search.toLowerCase()))
-    : [];
-
-  const handleSelectPool = async (pool) => {
+  }
+  const getPoolBySearch = (value) => {
+    if (value !== '') {
+      const result = pools.filter(item => String(item.name).toLowerCase().includes(String(value).toLowerCase()));
+      setTempPools(result);
+    } else {
+      setTempPools([]);
+    }
+  }
+  const selectPool = async (pool) => {
     try {
       const docRef = await addDoc(collection(db, "pools"), pool);
+      console.log("Document written with ID: ", docRef.id);
       setSearch('');
+      setTempPools([]);
       toast.success(`${pool.name} Pool Selected`);
     } catch (error) {
       console.error("Error Selecting Pool: ", error);
     }
-  };
 
+  }
+  const { sendTransaction, balance, address } = WALLETCONTEXT()
+  const [amount, setAmount] = useState(0);
+  const [pool, setPool] = useState(null);
+  useEffect(() => {
+    getPoolName();
+  }, [])
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const balanceInAda = Number(balance) / 1000000;
-    if (balanceInAda < amount || balanceInAda === 0) {
+    if ((Number(balance) / 1000000).toFixed(2) < amount || (Number(balance) / 1000000).toFixed(2) == 0) {
       toast.error('Insufficient Balance!');
       return;
     }
     await sendTransaction(recipient, amount);
-    setAmount('');
-  };
-
-  const handleMaxBalance = () => {
+    setAmount(0);
+  }
+  function showAlert() {
+    alert("Thank you for subscribing!");
+  }
+  const showMaxBalance = () => {
     setAmount((Number(balance) / 1000000).toFixed(2));
-  };
-  
+  }
+  const getPoolName = async () => {
+    try {
+      const items = [];
+      const querySnapshot = await getDocs(collection(db, "pools"));
+      querySnapshot.forEach(item => {
+        items.push(item.data());
+      })
+      setPool(items[items.length - 1]);
+    } catch (error) {
+      toast.error('Something went wrong!');
+    }
+  }
   return (
     <div className="flex lg:h-screen flex-col  gap-y-24 lg:px-10 px-4  py-8 w-ful overflow-y-scroll">
       <div className=" flex-col space-y-5 px-4">
@@ -127,49 +133,24 @@ const Stake = () => {
           Stake your ADA to our high performance validator run by the Cardano
           team. 0% commission +🔥APY %
         </h2>
-        {/* Send ADA*/}
-      {
-        address && <div className="flex flex-col items-center space-y-8 my-5">
-          <div className="w-max h-full bg-black bg-opacity-50 flex flex-col items-center space-y-8 px-6 py-8 rounded-lg text-white backdrop-filter backdrop-blur-md">
-            <h2 className="text-2xl font-semibold">
-              {
-                pool && pool.name
-              }
-            </h2>
-            <p className="text-gray-200 text-sm">
-              Choose how much you want to Delegate
-            </p>
-            <div className="flex items-center justify-evenly space-x-4">
-              <div className="text-center">
-                <h2 className="text-4xl text-gray-300">ADA</h2>
-                <h2 className="text-4xl text-gray-300">{(Number(balance) / 1000000).toFixed(2)}</h2>
-              </div>
-              <img src={logo} alt="" className="w-[200px]" />
-            </div>
-            <form className="w-full" onSubmit={handleSubmit}>
-              {/* <label htmlFor="recipient">Recipient</label> */}
-              {/* <div className="border border-gray-300 px-4 rounded-full flex w-full items-center space-x-4 mb-3">
-              <input type="text" className="bg-transparent border-0 outline-0 w-full"
-                onChange={(e) => setRecipient(e.target.value)}
-                value={recipient} required />
-            </div> */}
-              <div className="border border-gray-300 px-4 rounded-full w-full flex items-center space-x-4 mb-3 py-1">
-                <input type="number" min="0" className="bg-transparent border-0 outline-0 w-full"
-                  onChange={(e) => setAmount(e.target.value)}
-                  value={amount} required />
-                <button type="button" className="bg-orange-500 text-sm text-white font-semibold rounded-full p-2" onClick={() => showMaxBalance()}>MAX</button>
-              </div>
-              <button
-                type="submit"
-                className="w-full bg-orange-500 text-white px-2 py-2 rounded-full font-semibold"
-              >
-                Delegate
-              </button>
-            </form>
+        <div className="h-full bg-black bg-opacity-50 flex flex-col items-center space-y-8 px-6 py-8 rounded-lg text-white backdrop-filter backdrop-blur-md">
+          <h2 className="text-2xl font-semibold">Stake ADA</h2>
+          <p className="text-gray-200 text-sm">
+            Choose how much you want to stake and earn rewards
+          </p>
+          <span className="flex items-center justify-evenly space-x-4">
+            <h2 className="text-4xl text-gray-300">0.0</h2>
+            <img src={logo} alt="" className="w-[200px]" />
+          </span>
+          <div className="border border-gray-300 px-4 rounded-full flex items-center space-x-4">
+            <p>Avaliable Balance: 0</p>
+            <p className="text-gray-500 font-semibold">ADA</p>
+            <p className="bg-slate-600 text-sm text-gray-400 font-semibold rounded-full p-2">MAX</p>
           </div>
+          <button className="w-full bg-gray-700 text-gray-400 px-2 py-2 rounded-full font-semibold">
+            Stake ADA
+          </button>
         </div>
-      }
-
       </div>
     </div>
   );
